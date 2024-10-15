@@ -49,7 +49,23 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+			miaf: {
+				blue: {
+					'300': '#1D2342',
+					'200': '#242C53',
+					'100': '#3A4164'
+				},
+				gold: {
+					'200': '#B3A04F',
+					'100': '#CEB95B'
+				},
+				gray: {
+					'300': '#3B3B3B',
+					'200': '#9D9D9D',
+					'100': '#F5F5F5'
+				}
+			}
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
