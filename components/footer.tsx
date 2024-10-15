@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { Menu } from 'lucide-react'
 
 export const Footer = () => {
     return (
