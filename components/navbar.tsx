@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Menu } from 'lucide-react'
 
 export const Navbar = () => {
@@ -11,11 +12,18 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 w-full py-6 z-[49] bg-miaf-blue-300 px-16 md:px-20 flex justify-between items-center shadow-sm lg:px-32 xl:px-48 2xl:px-56">
+        <nav className="sticky top-0 w-full py-6 z-[49] bg-miaf-blue-300 px-12 md:px-20 flex justify-between items-center shadow-sm lg:px-32 xl:px-48 2xl:px-56">
 
             {/* Logo */}
-            <a href="/" className="text-white text-lg font-bold">
-                <img src="/logo.png" alt="Logo MIAF Asesores" className="h-12 md:h-11" />
+            <a href="/" className="flex items-center">
+                <div className="relative w-24 h-12">
+                    <Image
+                        fill
+                        alt="Logo MIAF Asesores"
+                        src="/logo.png"
+                        priority
+                    />
+                </div>
             </a>
 
             {/* Nav */}

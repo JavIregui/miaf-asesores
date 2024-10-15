@@ -1,4 +1,5 @@
 import { Navbar } from "../../components/navbar"
+import { Footer } from "../../components/footer"
 
 const ClientLayout = ({
     children,
@@ -8,9 +9,10 @@ const ClientLayout = ({
     return (
         <>
             <Navbar/>
-            <div className="flex h-full pt-20">
+            <div className="flex h-full">
                 {children}
             </div>
+            <Footer/>
         </>
     );
 };
