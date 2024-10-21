@@ -46,7 +46,7 @@ export const Navbar = () => {
 
             {/* Mobile menu */}
             {isOpen && (
-                <div className="absolute top-24 left-0 w-full bg-miaf-blue-200 flex flex-col px-12 space-y-4 py-6 md:hidden">
+                <div className="absolute top-24 left-0 w-full bg-miaf-blue-200 flex flex-col px-12 space-y-4 py-6 font-roboto font-normal text-base md:hidden">
                     <a href="/empresas" className="text-white">
                         Empresas
                     </a>
