@@ -18,17 +18,20 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        miaf: "bg-miaf-blue-200 text-white font-roboto font-normal text-base px-8 py-4 hover:bg-miaf-blue-100 focus:bg-miaf-blue-100 active:bg-miaf-blue-300",
+        miafSecondary: "border-white border-2 text-white font-roboto font-normal text-base px-8 py-4 hover:bg-white/10 focus:bg-white/10 active:bg-white/20",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        miaf: "h-auto w-min rounded-none",
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: "miaf",
+      size: "miaf",
     },
   }
 )
