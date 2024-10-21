@@ -25,7 +25,7 @@ export const Footer = () => {
                     </div>
                 </a>
             </div>
-            <div className='text-miaf-gray-200 flex flex-col space-y-0 sm:text-sm'>
+            <div className='text-miaf-gray-200 flex flex-col space-y-0 font-roboto font-light text-sm'>
                 <p>info@miafasesores.org</p>
                 <p>+34 911 567 890</p>
             </div>

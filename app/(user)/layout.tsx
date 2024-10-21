@@ -9,7 +9,7 @@ const ClientLayout = ({
     return (
         <>
             <Navbar/>
-            <div className="flex h-full">
+            <div className="flex flex-col h-full">
                 {children}
             </div>
             <Footer/>

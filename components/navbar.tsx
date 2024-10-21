@@ -27,7 +27,7 @@ export const Navbar = () => {
             </a>
 
             {/* Nav */}
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex space-x-8 font-roboto font-normal text-base">
                 <a href="/empresas" className="text-white text-base transition-all duration-200 hover:text-miaf-gold-100">
                     Empresas
                 </a>
