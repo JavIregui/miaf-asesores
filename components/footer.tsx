@@ -9,7 +9,7 @@ export const Footer = () => {
                         <Image
                             fill
                             alt="Logo MIAF Asesores"
-                            src="/logoDark.png"
+                            src="/img/logoDark.png"
                             priority
                         />
                     </div>
@@ -19,7 +19,7 @@ export const Footer = () => {
                         <Image
                             fill
                             alt="Logo ISDE"
-                            src="/uniLogo.png"
+                            src="/img/uniLogo.png"
                             priority
                         />
                     </div>

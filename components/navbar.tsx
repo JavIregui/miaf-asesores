@@ -20,7 +20,7 @@ export const Navbar = () => {
                     <Image
                         fill
                         alt="Logo MIAF Asesores"
-                        src="/logo.png"
+                        src="/img/logo.png"
                         priority
                     />
                 </div>
