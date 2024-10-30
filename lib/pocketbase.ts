@@ -22,6 +22,7 @@ export async function register(registerData: {
     try {
         await client.collection('users').create(data);
         return { success: true, message: "Registro exitoso" };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error("Error en el registro:", error);
         return { success: false, message: error.message || "Error en el registro" };
@@ -38,6 +39,7 @@ export async function login(loginData: {
             loginData.password
         );
         return { success: true, message: "Login exitoso" };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {
         console.error("Error en el login:", error);
         return { success: false, message: error.message || "Error en el login" };
