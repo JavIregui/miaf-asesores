@@ -22,8 +22,8 @@ import {
     FormMessage
 } from "@/components/ui/form";
 
-import { LoginSchema } from "@/schemas";
-import { login } from "@/lib/pocketbase";
+import { RegisterSchema } from "@/schemas";
+import { register } from "@/lib/pocketbase";
 
 import { useRouter } from 'next/navigation';
 
@@ -37,23 +37,26 @@ export default function Admin() {
     const [error, setError] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver: zodResolver(LoginSchema),
+    const form = useForm<z.infer<typeof RegisterSchema>>({
+        resolver: zodResolver(RegisterSchema),
         defaultValues: {
             email: "",
+            name: "",
+            lastname: "",
             password: "",
+            passwordConfirm: "",
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
         setIsLoading(true);
 
-        const result = await login(values);
+        const result = await register(values);
 
-        form.reset();
         if (result.success) {
+            form.reset();
             setError(false);
-            router.push("/admin/dashboard");
+            router.push("/admin");
         } else {
             console.error(result.message);
             setError(true);
@@ -79,9 +82,43 @@ export default function Admin() {
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-4 text-miaf-gray-300 font-roboto"
+                            className="space-y-6 text-miaf-gray-300 font-roboto"
                         >
                             <div className="space-y-4">
+                                <div className="flex space-x-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel className="text-base">Nombre</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        type="text"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="lastname"
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel className="text-base">Apellidos</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        type="text"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
                                 <FormField
                                     control={form.control}
                                     name="email"
@@ -116,10 +153,27 @@ export default function Admin() {
                                         </FormItem>
                                     )}
                                 />
+                                <FormField
+                                    control={form.control}
+                                    name="passwordConfirm"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel className="text-base">Repetir contraseña</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    placeholder="******"
+                                                    type="password"
+                                                />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
 
                             {error && (
-                                <FormError message="Login incorrecto"/>
+                                <FormError message="Error en el registro"/>
                             )}
 
                             <Button
@@ -127,7 +181,7 @@ export default function Admin() {
                                 className="w-full"
                                 disabled={isLoading}
                             >
-                                {isLoading ? "Cargando..." : "Login"}
+                                {isLoading ? "Cargando..." : "Registrarse"}
                             </Button>
                         </form>
                     </Form>
