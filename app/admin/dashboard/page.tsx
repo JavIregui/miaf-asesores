@@ -18,7 +18,7 @@ export default function Admin() {
 
     return (
         <>
-            <div className="flex justify-between items-center py-4 shadow-sm px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28">
+            <div className="max-w-dvw flex justify-between items-center py-4 shadow-sm px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28">
                 <div className='flex space-x-8 items-center'>
                     <Image
                         alt="Logo MIAF Asesores"
@@ -31,7 +31,7 @@ export default function Admin() {
                         Bienvenido <span className='font-bold'>{userName}</span>
                     </h1>
                 </div>
-                
+
                 <Button variant="miaf" size="miafSmall">
                     Cerrar sesión
                     <LogOut className="h-4 w-4" />
