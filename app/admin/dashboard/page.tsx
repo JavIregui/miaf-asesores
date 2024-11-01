@@ -4,11 +4,15 @@ import { Button } from '@/components/ui/button';
 import { client } from '@/lib/pocketbase';
 import { LogOut } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function Admin() {
 
     const [userName, setUserName] = useState('Usuario invitado');
+
+    const router = useRouter();
 
     useEffect(() => {
         if (client.authStore.isValid) {
@@ -16,9 +20,15 @@ export default function Admin() {
         }
     }, []);
 
+    const handleLogout = () => {
+        Cookies.remove('pb_auth');
+        client.authStore.clear();
+        router.push('/admin');
+    };
+
     return (
         <>
-            <div className="w-dvw flex justify-between items-center py-4 shadow-sm px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28">
+            <div className="flex justify-between items-center py-4 shadow-sm px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28">
                 <div className='flex space-x-8 items-center'>
                     <Image
                         alt="Logo MIAF Asesores"
@@ -32,7 +42,7 @@ export default function Admin() {
                     </h1>
                 </div>
 
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={handleLogout}>
                     <LogOut className="h-4 w-4" />
                 </Button>
             </div>
