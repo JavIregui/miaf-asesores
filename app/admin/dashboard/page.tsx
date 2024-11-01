@@ -18,8 +18,8 @@ export default function Admin() {
 
     return (
         <>
-            <div className="max-w-vw flex justify-between items-center py-4 shadow-sm px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28">
-                <div className='flex space-x-0 sm:space-x-8 items-center'>
+            <div className="flex justify-between items-center py-4 shadow-sm px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28">
+                <div className='flex space-x-8 items-center'>
                     <Image
                         alt="Logo MIAF Asesores"
                         src="/img/logoDark.png"
@@ -32,8 +32,7 @@ export default function Admin() {
                     </h1>
                 </div>
 
-                <Button variant="miaf" size="miafSmall">
-                    Cerrar sesión
+                <Button variant="outline" size="icon">
                     <LogOut className="h-4 w-4" />
                 </Button>
             </div>
