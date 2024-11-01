@@ -15,6 +15,7 @@ export const Navbar = () => {
         <nav className="sticky top-0 w-full py-6 z-[49] bg-miaf-blue-300 px-12 md:px-20 flex justify-between items-center shadow-sm lg:px-32 xl:px-48 2xl:px-56">
 
             {/* Logo */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/" className="flex items-center">
                 <div className="relative w-24 h-12">
                     <Image
@@ -28,12 +29,15 @@ export const Navbar = () => {
 
             {/* Nav */}
             <div className="hidden md:flex space-x-8 font-roboto font-normal text-base">
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a href="/empresas" className="text-white text-base transition-all duration-200 hover:text-miaf-gold-100">
                     Empresas
                 </a>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a href="/personasFisicas" className="text-white text-base transition-all duration-200 hover:text-miaf-gold-100">
                     Personas físicas
                 </a>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a href="/internacional" className="text-white text-base transition-all duration-200 hover:text-miaf-gold-100">
                     Internacional
                 </a>
@@ -47,12 +51,15 @@ export const Navbar = () => {
             {/* Mobile menu */}
             {isOpen && (
                 <div className="absolute top-24 left-0 w-full bg-miaf-blue-200 flex flex-col px-12 space-y-4 py-6 font-roboto font-normal text-base md:hidden">
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a href="/empresas" className="text-white">
                         Empresas
                     </a>
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a href="/personasFisicas" className="text-white">
                         Personas físicas
                     </a>
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a href="/internacional" className="text-white">
                         Internacional
                     </a>
