@@ -30,6 +30,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import { FormError } from "@/components/form-error";
 
+import Cookies from "js-cookie";
+
 export default function Admin() {
 
     const router = useRouter();
@@ -53,9 +55,12 @@ export default function Admin() {
         form.reset();
         if (result.success) {
             setError(false);
+            if(result.token){
+                Cookies.set('pb_auth', result.token, { expires: 8/24 });
+            }
             router.push("/admin/dashboard");
         } else {
-            console.error(result.message);
+            // console.error(result.message);
             setError(true);
         }
 

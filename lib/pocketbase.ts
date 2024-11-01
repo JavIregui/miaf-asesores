@@ -24,7 +24,6 @@ export async function register(registerData: {
         return { success: true, message: "Registro exitoso" };
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error("Error en el registro:", error);
         return { success: false, message: error.message || "Error en el registro" };
     }
 }
@@ -32,16 +31,16 @@ export async function register(registerData: {
 export async function login(loginData: {
     email: string;
     password: string;
-}): Promise<{ success: boolean, message: string }> {
+}): Promise<{ success: boolean; token?: string; message: string }> {
     try {
-        await client.collection('users').authWithPassword(
+        const authData = await client.collection('users').authWithPassword(
             loginData.email,
             loginData.password
         );
-        return { success: true, message: "Login exitoso" };
+        
+        return { success: true, token: authData.token, message: "Login exitoso" };
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
-        console.error("Error en el login:", error);
+    } catch (error: any) {
         return { success: false, message: error.message || "Error en el login" };
     }
 }
