@@ -12,6 +12,7 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(url);
     }
     client.authStore.save(cookie);
+    
     await client.collection('users').authRefresh();
     const isAuthenticated = client.authStore.isValid;
 
