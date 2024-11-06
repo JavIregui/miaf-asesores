@@ -18,11 +18,31 @@ import {
     SquarePen
 } from 'lucide-react';
 
+import { useState } from 'react';
+import { client } from '@/lib/pocketbase';
+
 interface NewProps {
     newsItem: RecordModel;
+    onDelete: (id: string) => Promise<void>;
 }
 
-export const AdminNew = ({ newsItem }: NewProps) => {
+export const AdminNew = ({ newsItem, onDelete }: NewProps) => {
+
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        try {
+            await onDelete(newsItem.id);
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        } finally {
+            setDeleteOpen(false);
+            setDeleting(false);
+        }
+    };
+
     return (
         <div key={newsItem.id}>
             <div
@@ -31,13 +51,17 @@ export const AdminNew = ({ newsItem }: NewProps) => {
             >
                 <div className="h-full rounded-md flex flex-col justify-between bg-gradient-to-t from-[#000000c8] to-[#00000032] text-white px-8 py-8 lg:px-12 lg:py-10 xl:px-14 xl:py-10 2xl:px-16">
                     <div className='flex flex-row justify-end space-x-2'>
-                        <AlertDialog>
+                        <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
 
                             <AlertDialogTrigger asChild>
-                                <Button variant="adminDestructive" size="sm">
+
+                                <Button variant="adminDestructive" size="sm" onClick={() => setDeleteOpen(true)}>
+
                                     <Trash2 className='h-4 w-4' />
                                     Eliminar
+
                                 </Button>
+
                             </AlertDialogTrigger>
 
                             <AlertDialogContent>
@@ -55,8 +79,10 @@ export const AdminNew = ({ newsItem }: NewProps) => {
                                 <AlertDialogFooter>
 
                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-
-                                    <AlertDialogAction>Eliminar</AlertDialogAction>
+                                    
+                                    <AlertDialogAction onClick={handleDelete} disabled={deleting}>
+                                        {deleting ? 'Eliminando...' : 'Eliminar'}
+                                    </AlertDialogAction>
 
                                 </AlertDialogFooter>
 

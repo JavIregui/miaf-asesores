@@ -105,6 +105,15 @@ export default function Dashboard() {
         router.push('/admin');
     };
 
+    const handleDelete = async (id: string) => {
+        try {
+            await client.collection('news').delete(id);
+            fetchNews();
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    };
+
     return (
         <>
             <div className="flex justify-between items-center py-4 shadow-sm px-12 md:px-14 lg:px-16 xl:px-24 2xl:px-28">
@@ -204,7 +213,7 @@ export default function Dashboard() {
                     {!loading && (
                         news.map((newsItem) => (
                             <div key={newsItem.id}>
-                                <AdminNew newsItem={newsItem}/>
+                                <AdminNew newsItem={newsItem} onDelete={handleDelete}/>
                             </div>
                         ))
                     )}
