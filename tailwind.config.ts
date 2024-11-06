@@ -67,6 +67,7 @@ const config: Config = {
 				gray: {
 					'300': '#3B3B3B',
 					'200': '#9D9D9D',
+					'150': '#C8C8C8',
 					'100': '#F5F5F5'
 				}
 			}

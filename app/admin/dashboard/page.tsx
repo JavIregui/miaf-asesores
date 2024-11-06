@@ -1,24 +1,29 @@
 "use client"
 
-import { Button } from '@/components/ui/button';
-import { client } from '@/lib/pocketbase';
-import { LogOut, Globe, User, BriefcaseBusiness } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
+
+import { RecordModel } from 'pocketbase';
+import { client } from '@/lib/pocketbase';
+
 import Cookies from 'js-cookie';
-import { RecordModel, ListResult } from 'pocketbase';
+import debounce from 'lodash/debounce';
+
 import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
-import { 
-    Pagination, 
-    PaginationContent, 
-    PaginationEllipsis, 
-    PaginationItem, 
-    PaginationLink, 
-    PaginationNext, 
-    PaginationPrevious 
-} from '@/components/ui/pagination';
+import { Button } from '@/components/ui/button';
+import { AdminPagination } from '@/components/adminPagination';
+import { AdminNew } from '@/components/adminNew';
+
+import {
+    LogOut,
+    Globe,
+    User,
+    BriefcaseBusiness,
+    FilePlus2
+} from 'lucide-react';
 
 export default function Dashboard() {
 
@@ -42,41 +47,42 @@ export default function Dashboard() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const fetchNews = async () => {
-        const controller = new AbortController();
-        const { signal } = controller;
+    const [loading, setLoading] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [wasFocused, setWasFocused] = useState(false);
 
+    const fetchNews = debounce(async () => {
+        setLoading(true);
+    
         let categoryFilters = [];
         if (empresas) categoryFilters.push("empresas = true");
         if (personas) categoryFilters.push("personasFisicas = true");
         if (internacional) categoryFilters.push("internacional = true");
-
+    
         const categoryString = categoryFilters.length > 0 ? `(${categoryFilters.join(" || ")})` : '';
         const searchFilter = query ? `(title ~ "${query}" || author ~ "${query}" || content ~ "${query}")` : '';
         const filterString = categoryString && searchFilter ? `${categoryString} && ${searchFilter}` : categoryString || searchFilter;
-
+    
         try {
-            const response: ListResult<RecordModel> = await client.collection('news').getList(page, 5, {
+            const response = await client.collection('news').getList(page, 5, {
                 filter: filterString,
                 sort: '-created',
-                signal,
             });
-
+    
             setNews(response.items);
             setTotalPages(response.totalPages);
-        } catch (error: any) {
+        } catch (error:any) {
             if (error.name === 'AbortError') {
                 console.log('Request was cancelled');
-            } else {
-                console.error('Error fetching news:', error);
             }
+        } finally {
+            setLoading(false);
         }
-
-        return () => controller.abort();
-    };
+    }, 800);
 
     useEffect(() => {
         fetchNews();
+        return () => fetchNews.cancel();
     }, [query, empresas, personas, internacional, page]);
 
     useEffect(() => {
@@ -86,6 +92,12 @@ export default function Dashboard() {
             setInternacional(true);
         }
     }, [empresas, personas, internacional]);
+
+    useEffect(() => {
+        if (!loading && wasFocused) {
+            inputRef.current?.focus();
+        }
+    }, [loading, wasFocused]);
 
     const handleLogout = () => {
         Cookies.remove('pb_auth');
@@ -97,13 +109,15 @@ export default function Dashboard() {
         <>
             <div className="flex justify-between items-center py-4 shadow-sm px-12 md:px-14 lg:px-16 xl:px-24 2xl:px-28">
                 <div className='flex space-x-8 items-center'>
-                    <Image
-                        alt="Logo MIAF Asesores"
-                        src="/img/logoDark.png"
-                        width={96}
-                        height={40}
-                        priority
-                    />
+                    <Link href="/">
+                        <Image
+                            alt="Logo MIAF Asesores"
+                            src="/img/logoDark.png"
+                            width={96}
+                            height={40}
+                            priority
+                        />
+                    </Link>
                     <h1 className='invisible sm:visible font-roboto font-normal text-miaf-gray-300 text-xl'>
                         Bienvenido <span className='font-bold'>{userName}</span>
                     </h1>
@@ -114,12 +128,16 @@ export default function Dashboard() {
                 </Button>
             </div>
 
-            <div className="flex flex-col space-y-4 px-16 md:px-28 lg:px-32 xl:px-48 2xl:px-56 pt-8 pb-16 lg:space-y-8">
+            <div className="flex flex-col font-roboto text-miaf-gray-300 space-y-4 px-16 md:px-28 lg:px-32 xl:px-48 2xl:px-56 pt-8 pb-16 lg:space-y-8">
                 <div className='flex flex-col space-y-4 lg:space-x-4 lg:space-y-0 lg:flex-row'>
                     <Input
+                        ref={inputRef}
                         placeholder="Buscar por título, autor o parte del texto"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
+                        onFocus={() => setWasFocused(true)}
+                        onBlur={() => setWasFocused(false)}
+                        disabled={loading}
                         className="flex-grow text-sm rounded-md h-10 px-4"
                     />
                     <div className="flex space-x-2 overflow-x-scroll sm:overflow-x-auto lg:min-w-fit">
@@ -128,6 +146,7 @@ export default function Dashboard() {
                             pressed={empresas}
                             onPressedChange={() => setEmpresas(prev => !prev)}
                             className='min-w-fit flex-grow'
+                            disabled={loading}
                         >
                             <BriefcaseBusiness className='h-4 w-4 mr-2' />
                             Empresas
@@ -138,6 +157,7 @@ export default function Dashboard() {
                             pressed={personas}
                             onPressedChange={() => setPersonas(prev => !prev)}
                             className='min-w-fit flex-grow'
+                            disabled={loading}
                         >
                             <User className='h-4 w-4 mr-2' />
                             Personas físicas
@@ -148,6 +168,7 @@ export default function Dashboard() {
                             pressed={internacional}
                             onPressedChange={() => setInternacional(prev => !prev)}
                             className='min-w-fit flex-grow'
+                            disabled={loading}
                         >
                             <Globe className='h-4 w-4 mr-2' />
                             Internacional
@@ -156,70 +177,41 @@ export default function Dashboard() {
                 </div>
 
                 <div className="space-y-4">
-                    {news.map((newsItem) => (
-                        <div key={newsItem.id} className="p-4 shadow rounded bg-white">
-                            <h2 className="font-bold text-lg">{newsItem.title}</h2>
-                            <p>{newsItem.author}</p>
-                            <p className="text-sm text-gray-600">{newsItem.content}</p>
+                    <div 
+                        onClick={() => {}}
+                        className="flex text-xl md:text-2xl items-center bg-miaf-blue-200 px-8 py-8 lg:px-12 lg:py-10 xl:px-14 xl:py-10 2xl:px-16 rounded-md text-white hover:bg-miaf-blue-100 transition"
+                    >
+                        <FilePlus2 className='h-8 w-8 md:h-10 md:w-10 mr-4'/>
+                        Nuevo artículo
+                    </div>
+
+                    {(news.length == 0 && !loading) && (
+                        <div className="flex justify-center pt-16 pb-32">
+                            <p className='text-base text-miaf-gray-200 font-roboto text-center'>
+                                No se encontró ningún artículo
+                            </p>
                         </div>
-                    ))}
+                    )}
+
+                    {loading && (
+                        <div className="flex justify-center pt-16 pb-32">
+                            <p className='text-base text-miaf-gray-200 font-roboto text-center'>
+                                Cargando...
+                            </p>
+                        </div>
+                    )}
+                    
+                    {!loading && (
+                        news.map((newsItem) => (
+                            <div key={newsItem.id}>
+                                <AdminNew newsItem={newsItem}/>
+                            </div>
+                        ))
+                    )}
+                    
                 </div>
 
-                <div className="max-w-fit flex space-x-2">
-                    <Pagination>
-                        <PaginationContent>
-
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={page > 1 ? () => setPage(page-1) : undefined}
-                                    className={page === 1 ? "text-gray-400 pointer-events-none" : ""}
-                                />
-                            </PaginationItem>
-
-                            {page-2 > 0 && (
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            )}
-
-                            {page-1 > 0 && (
-                                <PaginationItem>
-                                    <PaginationLink onClick={() => setPage(page-1)}>
-                                        {page-1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )}
-
-                            <PaginationItem>
-                                <PaginationLink isActive>
-                                    {page}
-                                </PaginationLink>
-                            </PaginationItem>
-
-                            {page <= totalPages-1 && (
-                                <PaginationItem>
-                                    <PaginationLink onClick={() => setPage(page+1)}>
-                                        {page+1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )}
-
-                            {page <= totalPages-2 && (
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            )}
-
-                            <PaginationItem>
-                                <PaginationNext
-                                    onClick={page < totalPages ? () => setPage(page+1) : undefined}
-                                    className={page === totalPages ? "text-gray-400 pointer-events-none" : ""}
-                                />
-                            </PaginationItem>
-
-                        </PaginationContent>
-                    </Pagination>
-                </div>
+                <AdminPagination page={page} totalPages={totalPages} setPage={(num:number) => {setPage(num)}}/>
             </div>
         </>
 

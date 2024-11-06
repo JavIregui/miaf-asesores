@@ -20,6 +20,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         miaf: "bg-miaf-blue-200 text-white font-roboto font-normal text-base hover:bg-miaf-blue-100 focus:bg-miaf-blue-100 active:bg-miaf-blue-300",
         miafSecondary: "border-white border-2 text-white font-roboto font-normal text-base px-8 py-4 hover:bg-white/10 focus:bg-white/10 active:bg-white/20",
+        adminEdit: "border-white border-2 hover:bg-white/20",
+        adminDestructive:"border-white border-2 hover:bg-destructive/75 hover:border-destructive",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <link rel="preload" href="/index.webp" as="image"/>
+        <link rel="preload" href="/index.webp" as="image" />
       </Head>
 
       <div>
@@ -62,7 +62,7 @@ export default function Home() {
             </h3>
 
             <p className="text-miaf-gray-200 text-base font-roboto font-normal">
-              Si necesitas ayuda para tu caso, no dudes en escribirnos. 
+              Si necesitas ayuda para tu caso, no dudes en escribirnos.
               Nuestro equipo está aquí para ofrecerte soluciones adaptadas
               a tus necesidades y ayudarte a tomar las mejores decisiones fiscales.
             </p>
@@ -72,15 +72,15 @@ export default function Home() {
         </section>
 
         <section className="bg-miaf-blue-200 flex flex-col space-y-8 py-12 px-12 md:px-10 md:flex-row md:justify-center md:space-y-0 md:space-x-6 lg:space-x-8 xl:space-x-12 lg:px-16 xl:px-24 2xl:px-28">
-        {sections.map((section) => (
-          <Section key={section.label} name={section.label} icon={section.icon} text={section.text} link={section.href}/>
-        ))}
+          {sections.map((section) => (
+            <Section key={section.label} name={section.label} icon={section.icon} text={section.text} link={section.href} />
+          ))}
         </section>
 
         <section ref={latestRef} className='pt-12 pb-24 px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28'>
           <h2 className='font-playfair font-normal text-4xl  text-miaf-blue-200'>Últimas Noticias</h2>
         </section>
-    </div>
+      </div>
     </>
   );
 }
