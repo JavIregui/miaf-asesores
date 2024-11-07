@@ -138,7 +138,7 @@ export default function Home() {
                     )}
 
                     {!loading && (
-                        <div className="flex flex-col space-y-8">
+                        <div className="flex flex-col space-y-4 lg:space-y-8">
                             {news.reduce((rows, newsItem, index) => {
                                 if (index % 2 === 0) {
                                     rows.push([newsItem]);
