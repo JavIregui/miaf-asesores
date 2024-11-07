@@ -115,8 +115,13 @@ export default function Dashboard() {
         }
     };
 
-    const handleEdit = async () => {
-        console.log("edit")
+    const handleEdit = async (id:string, data: FormData) => {
+        try {
+            await client.collection('news').update(id, data);
+            fetchNews();
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
     };
 
     return (
