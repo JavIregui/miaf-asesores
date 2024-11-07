@@ -115,6 +115,10 @@ export default function Dashboard() {
         }
     };
 
+    const handleEdit = async () => {
+        console.log("edit")
+    };
+
     return (
         <>
             <div className="flex justify-between items-center py-4 shadow-sm px-12 md:px-14 lg:px-16 xl:px-24 2xl:px-28">
@@ -214,7 +218,7 @@ export default function Dashboard() {
                     {!loading && (
                         news.map((newsItem) => (
                             <div key={newsItem.id}>
-                                <AdminNew newsItem={newsItem} onDelete={handleDelete}/>
+                                <AdminNew newsItem={newsItem} onDelete={handleDelete} onEdit={handleEdit}/>
                             </div>
                         ))
                     )}
