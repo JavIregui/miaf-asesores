@@ -1,51 +1,5 @@
 import { RecordModel } from 'pocketbase';
 
-import { Button } from '@/components/ui/button';
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import {
-    EditDialog,
-    EditDialogAction,
-    EditDialogCancel,
-    EditDialogContent,
-    EditDialogDescription,
-    EditDialogFooter,
-    EditDialogHeader,
-    EditDialogTitle,
-    EditDialogTrigger,
-} from "@/components/ui/edit-dialog"
-
-import {
-    Trash2,
-    SquarePen
-} from 'lucide-react';
-
-import { useState, useEffect } from 'react';
-
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { FormError } from './form-error';
-
-import { Bold, Italic } from "lucide-react"
- 
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group"
-
 interface NewProps {
     newsItem: RecordModel;
 }
