@@ -71,6 +71,7 @@ export default function Dashboard() {
     
             setNews(response.items);
             setTotalPages(response.totalPages);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error:any) {
             if (error.name === 'AbortError') {
                 console.log('Request was cancelled');
