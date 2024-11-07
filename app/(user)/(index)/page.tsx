@@ -13,18 +13,16 @@ export default function Home() {
     const latestRef = useRef<HTMLDivElement | null>(null);
 
     const [news, setNews] = useState<RecordModel[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchNews();
     }, []);
 
-    useEffect(() => {
-        console.log(news)
-    }, [news]);
-
     const fetchNews = async () => {
+        setLoading(true);
         try {
-            const response = await client.collection('news').getList(1, 3, {
+            const response = await client.collection('news').getList(1, 4, {
                 filter: 'public = true',
                 sort: '-created',
             });
@@ -34,6 +32,8 @@ export default function Home() {
             if (error.name === 'AbortError') {
                 console.log('Request was cancelled');
             }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -105,17 +105,56 @@ export default function Home() {
                     ))}
                 </section>
 
-                <section ref={latestRef} className='pt-12 pb-24 px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28'>
+                <section ref={latestRef} className='flex flex-col space-y-8 pt-12 pb-24 px-12 md:px-10 lg:px-16 xl:px-24 2xl:px-28'>
                     <h2 className='font-playfair font-normal text-4xl  text-miaf-blue-200'>Últimas Noticias</h2>
-                    <div>
-                        {
-                            news.map((newsItem) => (
-                                <div key={newsItem.id}>
-                                    <MiafNew newsItem={newsItem}/>
+
+                    {loading && (
+                        <div className='flex flex-col space-y-8'>
+                            <div className='flex flex-col space-y-8 lg:space-y-0 lg:flex-row lg:space-x-8'>
+                                <div className='flex-grow h-64 bg-miaf-gray-150/50 animate-pulse'>
+
                                 </div>
-                            ))
-                        } 
-                    </div>
+                                <div className='flex-grow h-64 bg-miaf-gray-150/75 animate-pulse'>
+
+                                </div>
+                            </div>
+                            <div className='flex flex-col space-y-8 lg:space-y-0 lg:flex-row lg:space-x-8'>
+                                <div className='flex-grow h-64 bg-miaf-gray-150/25 animate-pulse'>
+
+                                </div>
+                                <div className='flex-grow h-64 bg-miaf-gray-150/50 animate-pulse'>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {(news.length == 0 && !loading) && (
+                        <div className="flex justify-center pt-16 pb-32">
+                            <p className='text-base text-miaf-gray-200 font-roboto text-center'>
+                                Todavía no hay artículos
+                            </p>
+                        </div>
+                    )}
+
+                    {!loading && (
+                        <div className="flex flex-col space-y-8">
+                            {news.reduce((rows, newsItem, index) => {
+                                if (index % 2 === 0) {
+                                    rows.push([newsItem]);
+                                } else {
+                                    rows[rows.length - 1].push(newsItem);
+                                }
+                                return rows;
+                            }, [] as RecordModel[][]).map((row, rowIndex) => (
+                                <div key={rowIndex} className="flex flex-col space-y-4 md:space-y-8 lg:space-y-0 lg:flex-row lg:space-x-8">
+                                    {row.map((newsItem) => (
+                                        <MiafNew key={newsItem.id} newsItem={newsItem} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </section>
             </div>
         </>
