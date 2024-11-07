@@ -37,6 +37,14 @@ import { useState, useEffect } from 'react';
 
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { FormError } from './form-error';
+
+import { Bold, Italic } from "lucide-react"
+ 
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
 
 interface NewProps {
     newsItem: RecordModel;
@@ -51,6 +59,8 @@ export const AdminNew = ({ newsItem, onDelete, onEdit }: NewProps) => {
 
     const [editOpen, setEditOpen] = useState(false);
     const [updating, setUpdating] = useState(false);
+
+    const [error, setError]= useState(false);
 
     const [formData, setFormData] = useState({
         title: newsItem.title,
@@ -96,6 +106,7 @@ export const AdminNew = ({ newsItem, onDelete, onEdit }: NewProps) => {
     };
 
     const handleEdit = async () => {
+        setError(false);
         setUpdating(true);
 
         const form = new FormData();
@@ -300,18 +311,35 @@ export const AdminNew = ({ newsItem, onDelete, onEdit }: NewProps) => {
                                     </div>
 
                                     <div className="flex flex-col flex-grow space-y-1">
+                                    <div className="flex items-baseline space-x-4">
                                         <Label className='text-lg' htmlFor="content">Contenido</Label>
-                                        <div className="border px-4 py-2 rounded-md flex-grow">
-                                            <EditorContent editor={editor} />
-                                        </div>
+
+                                        <ToggleGroup type="multiple">
+                                            <ToggleGroupItem value="bold" aria-label="Toggle bold" onClick={() => {editor?.chain().focus().toggleBold().run()}}>
+                                                <Bold className="h-4 w-4" />
+                                            </ToggleGroupItem>
+                                            <ToggleGroupItem value="italic" aria-label="Toggle italic" onClick={() => {editor?.chain().focus().toggleItalic().run()}}>
+                                                <Italic className="h-4 w-4" />
+                                            </ToggleGroupItem>
+                                        </ToggleGroup>
                                     </div>
+
+                                    <div onClick={() => editor?.commands.focus()} className="border px-4 py-2 rounded-md flex-grow">
+                                        <EditorContent className='font-sans' editor={editor} />
+                                    </div>
+                                </div>
+
                                 </form>
+
+                                {error && (
+                                    <FormError message="La imagen es obligatoria"/>
+                                )}
 
                                 <EditDialogFooter className='pt-4'>
 
                                     <EditDialogCancel>Cancelar</EditDialogCancel>
                                     
-                                    <EditDialogAction variant='default' onClick={(!newsItem.image && !formData.image) ? () => {console.log("Imágen obligatoria")} : handleEdit} disabled={updating}>
+                                    <EditDialogAction variant='default' onClick={(!newsItem.image && !formData.image) ? () => {setError(true)} : handleEdit} disabled={updating}>
                                         {updating ? 'Guardando...' : 'Guardar'}
                                     </EditDialogAction>
 
@@ -334,7 +362,7 @@ export const AdminNew = ({ newsItem, onDelete, onEdit }: NewProps) => {
                         </div>
 
                         <div
-                            className="text-base line-clamp-3"
+                            className="text-base line-clamp-3 font-sans"
                             dangerouslySetInnerHTML={{ __html: newsItem.content }}
                         />
                     </div>

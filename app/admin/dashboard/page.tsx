@@ -18,12 +18,38 @@ import { AdminPagination } from '@/components/adminPagination';
 import { AdminNew } from '@/components/adminNew';
 
 import {
+    EditDialog,
+    EditDialogAction,
+    EditDialogCancel,
+    EditDialogContent,
+    EditDialogDescription,
+    EditDialogFooter,
+    EditDialogHeader,
+    EditDialogTitle,
+    EditDialogTrigger,
+} from "@/components/ui/edit-dialog"
+
+import {
     LogOut,
     Globe,
     User,
     BriefcaseBusiness,
     FilePlus2
 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { FormError } from '@/components/form-error';
+import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
+
+import { Bold, Italic } from "lucide-react"
+ 
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
 
 export default function Dashboard() {
 
@@ -51,28 +77,74 @@ export default function Dashboard() {
     const inputRef = useRef<HTMLInputElement>(null);
     const [wasFocused, setWasFocused] = useState(false);
 
+    const [newOpen, setNewOpen] = useState(false);
+    const [creating, setCreating] = useState(false);
+    const [error, setError] = useState(false);
+
+    const [formData, setFormData] = useState({
+        title: '',
+        author: '',
+        content: '',
+        image: null as File | null,
+        public: false,
+        empresas: true,
+        personas: true,
+        internacional: true
+    });
+
+    const editor = useEditor({
+        extensions: [StarterKit],
+        content: formData.content,
+        immediatelyRender: false,
+        onUpdate: ({ editor }) => {
+            setFormData(prev => ({
+                ...prev,
+                content: editor.getHTML(),
+            }));
+        },
+    });
+
+    useEffect(() => {
+        if (!formData.empresas && !formData.personas && !formData.internacional) {
+            setFormData(prev => ({
+                ...prev,
+                empresas: true,
+                personas: true,
+                internacional: true
+            }));
+        }
+    }, [formData.empresas, formData.personas, formData.internacional]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
     const fetchNews = debounce(async () => {
         setLoading(true);
-    
+
         const categoryFilters = [];
         if (empresas) categoryFilters.push("empresas = true");
         if (personas) categoryFilters.push("personasFisicas = true");
         if (internacional) categoryFilters.push("internacional = true");
-    
+
         const categoryString = categoryFilters.length > 0 ? `(${categoryFilters.join(" || ")})` : '';
         const searchFilter = query ? `(title ~ "${query}" || author ~ "${query}" || content ~ "${query}")` : '';
         const filterString = categoryString && searchFilter ? `${categoryString} && ${searchFilter}` : categoryString || searchFilter;
-    
+
         try {
             const response = await client.collection('news').getList(page, 5, {
                 filter: filterString,
                 sort: '-created',
             });
-    
+
             setNews(response.items);
             setTotalPages(response.totalPages);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error:any) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             if (error.name === 'AbortError') {
                 console.log('Request was cancelled');
             }
@@ -100,6 +172,10 @@ export default function Dashboard() {
         }
     }, [loading, wasFocused]);
 
+    useEffect(() => {
+        console.log(formData.content)
+    }, [formData.content])
+
     const handleLogout = () => {
         Cookies.remove('pb_auth');
         client.authStore.clear();
@@ -115,7 +191,7 @@ export default function Dashboard() {
         }
     };
 
-    const handleEdit = async (id:string, data: FormData) => {
+    const handleEdit = async (id: string, data: FormData) => {
         try {
             await client.collection('news').update(id, data);
             fetchNews();
@@ -123,6 +199,50 @@ export default function Dashboard() {
             console.error('Error deleting item:', error);
         }
     };
+
+    const handleNew = async () => {
+        setError(false);
+        setCreating(true);
+
+        const form = new FormData();
+        form.append("title", formData.title);
+        form.append("author", formData.author);
+        form.append("content", formData.content);
+        form.append("public", formData.public.toString());
+        form.append("empresas", formData.empresas.toString());
+        form.append("personasFisicas", formData.personas.toString());
+        form.append("internacional", formData.internacional.toString());
+
+        if (formData.image) {
+            form.append("image", formData.image);
+        }
+
+        try {
+            await client.collection('news').create(form);
+        } catch (error) {
+            console.error('Error editing item:', error);
+        } finally {
+            setFormData({
+                title: '',
+                author: '',
+                content: '',
+                image: null as File | null,
+                public: false,
+                empresas: true,
+                personas: true,
+                internacional: true
+            });
+            setNewOpen(false);
+            setCreating(false);
+            fetchNews();
+        }
+    };
+
+    const handleError = async () => {
+        setError(true);
+        await new Promise(resolve => setTimeout(resolve, 250));
+        setNewOpen(true);
+    }
 
     return (
         <>
@@ -196,13 +316,185 @@ export default function Dashboard() {
                 </div>
 
                 <div className="space-y-4">
-                    <div 
-                        onClick={() => {}}
-                        className="flex text-xl md:text-2xl items-center bg-miaf-blue-200 px-8 py-8 lg:px-12 lg:py-10 xl:px-14 xl:py-10 2xl:px-16 rounded-md text-white hover:bg-miaf-blue-100 transition"
-                    >
-                        <FilePlus2 className='h-8 w-8 md:h-10 md:w-10 mr-4'/>
-                        Nuevo artículo
-                    </div>
+
+                    <EditDialog open={newOpen} onOpenChange={setNewOpen}>
+
+                        <EditDialogTrigger asChild>
+
+                            <div
+                                onClick={() => { }}
+                                className="flex text-xl md:text-2xl items-center bg-miaf-blue-200 px-8 py-8 lg:px-12 lg:py-10 xl:px-14 xl:py-10 2xl:px-16 rounded-md text-white hover:bg-miaf-blue-100 transition"
+                            >
+                                <FilePlus2 className='h-8 w-8 md:h-10 md:w-10 mr-4' />
+                                Nuevo artículo
+                            </div>
+
+                        </EditDialogTrigger>
+
+                        <EditDialogContent>
+
+                            <EditDialogHeader>
+
+                                <EditDialogTitle>Nuevo artículo</EditDialogTitle>
+                                <EditDialogDescription></EditDialogDescription>
+
+                            </EditDialogHeader>
+
+                            <form className="flex flex-col space-y-4 px-2 md:px-8 font-roboto flex-grow overflow-y-auto">
+                                <div className="flex flex-col space-x-0 space-y-4 md:space-y-0 md:space-x-4 md:flex-row">
+                                    <div className="space-y-1 flex-grow">
+                                        <Label className='text-lg' htmlFor="title">Título</Label>
+                                        <Input
+                                            id="title"
+                                            name="title"
+                                            className='text-sm rounded-md h-10 px-4'
+                                            value={formData.title}
+                                            onChange={handleChange}
+                                            placeholder="Escribe el título del artículo"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1 flex-grow md:flex-grow-0 md:w-1/3 lg:w-1/4">
+                                        <Label className='text-lg' htmlFor="author">Autor</Label>
+                                        <Input
+                                            id="author"
+                                            name="author"
+                                            className='text-sm rounded-md h-10 px-4'
+                                            value={formData.author}
+                                            onChange={handleChange}
+                                            placeholder="Escribe el nombre del autor"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col space-x-0 space-y-4 md:space-y-8 lg:space-x-8 lg:flex-row">
+                                    <div className='flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-end'>
+                                        <div className="space-y-1">
+                                            <Label className='text-lg' htmlFor="image">Imagen</Label>
+                                            <Input
+                                                id="image"
+                                                name="mage"
+                                                className='text-sm rounded-md h-10 px-4 hover:bg-miaf-gray-100/25 cursor-pointer'
+                                                type='file'
+                                                onChange={(e) => {
+                                                    const file = e.target.files ? e.target.files[0] : null;
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        image: file,
+                                                    }));
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center space-x-2">
+                                            <Label className='text-lg' htmlFor="public">Público</Label>
+                                            <Switch
+                                                id="public"
+                                                checked={formData.public}
+                                                onCheckedChange={() => {
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        public: !formData.public,
+                                                    }));
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className='flex flex-col min-w-fit space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-end'>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                checked={formData.empresas}
+                                                onCheckedChange={() => {
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        empresas: !formData.empresas,
+                                                    }));
+                                                }}
+                                                id="empresas"
+                                            />
+                                            <Label className='text-base lg:text-lg' htmlFor="empresas">Empresas</Label>
+                                        </div>
+
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                checked={formData.personas}
+                                                onCheckedChange={() => {
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        personas: !formData.personas,
+                                                    }));
+                                                }}
+                                                id="personas"
+                                            />
+                                            <Label className='text-base lg:text-lg' htmlFor="personas">Personas físicas</Label>
+                                        </div>
+
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                checked={formData.internacional}
+                                                onCheckedChange={() => {
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        internacional: !formData.internacional,
+                                                    }));
+                                                }}
+                                                id="internacional"
+                                            />
+                                            <Label className='text-base lg:text-lg' htmlFor="internacional">Internacional</Label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col flex-grow space-y-1">
+                                    <div className="flex items-baseline space-x-4">
+                                        <Label className='text-lg' htmlFor="content">Contenido</Label>
+
+                                        <ToggleGroup type="multiple">
+                                            <ToggleGroupItem value="bold" aria-label="Toggle bold" onClick={() => {editor?.chain().focus().toggleBold().run()}}>
+                                                <Bold className="h-4 w-4" />
+                                            </ToggleGroupItem>
+                                            <ToggleGroupItem value="italic" aria-label="Toggle italic" onClick={() => {editor?.chain().focus().toggleItalic().run()}}>
+                                                <Italic className="h-4 w-4" />
+                                            </ToggleGroupItem>
+                                        </ToggleGroup>
+                                    </div>
+
+                                    <div onClick={() => editor?.commands.focus()} className="border px-4 py-2 rounded-md flex-grow">
+                                        <EditorContent className='font-sans' editor={editor} />
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            {error && (
+                                <FormError message="La imagen es obligatoria" />
+                            )}
+
+                            <EditDialogFooter className='pt-4'>
+
+                                <EditDialogCancel onClick={() => {
+                                    setFormData({
+                                        title: '',
+                                        author: '',
+                                        content: '',
+                                        image: null as File | null,
+                                        public: false,
+                                        empresas: true,
+                                        personas: true,
+                                        internacional: true
+                                    });
+                                }}>Cancelar</EditDialogCancel>
+
+                                <EditDialogAction variant='default' onClick={(!formData.image) ? handleError : handleNew} disabled={creating}>
+                                    {creating ? 'Guardando...' : 'Guardar'}
+                                </EditDialogAction>
+
+                            </EditDialogFooter>
+
+                        </EditDialogContent>
+
+                    </EditDialog>
 
                     {(news.length == 0 && !loading) && (
                         <div className="flex justify-center pt-16 pb-32">
@@ -219,18 +511,18 @@ export default function Dashboard() {
                             </p>
                         </div>
                     )}
-                    
+
                     {!loading && (
                         news.map((newsItem) => (
                             <div key={newsItem.id}>
-                                <AdminNew newsItem={newsItem} onDelete={handleDelete} onEdit={handleEdit}/>
+                                <AdminNew newsItem={newsItem} onDelete={handleDelete} onEdit={handleEdit} />
                             </div>
                         ))
                     )}
-                    
+
                 </div>
 
-                <AdminPagination page={page} totalPages={totalPages} setPage={(num:number) => {setPage(num)}}/>
+                <AdminPagination page={page} totalPages={totalPages} setPage={(num: number) => { setPage(num) }} />
             </div>
         </>
 
