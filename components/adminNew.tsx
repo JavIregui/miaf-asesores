@@ -61,7 +61,7 @@ export const AdminNew = ({ newsItem, onDelete, onEdit }: NewProps) => {
     const handleEdit = async () => {
         setUpdating(true);
         try {
-            //await onEdit(/*Tiene que recibir el objeto con los nuevos datos que hay en el form*/);
+            await onEdit();
         } catch (error) {
             console.error('Error editing item:', error);
         } finally {

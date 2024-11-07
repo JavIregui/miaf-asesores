@@ -11,7 +11,7 @@ import {
 interface PaginationProps {
     page: number;
     totalPages: number;
-    setPage: Function;
+    setPage: (page: number) => void;
 }
 
 export const AdminPagination = ({ page, totalPages, setPage }: PaginationProps) => {
