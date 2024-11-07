@@ -147,7 +147,7 @@ export default function Dashboard() {
                 </Button>
             </div>
 
-            <div className="flex flex-col font-roboto text-miaf-gray-300 space-y-4 px-16 md:px-28 lg:px-32 xl:px-48 2xl:px-56 pt-8 pb-16 lg:space-y-8">
+            <div className="flex flex-col font-roboto text-miaf-gray-300 space-y-4 px-8 md:px-28 lg:px-32 xl:px-48 2xl:px-56 pt-8 pb-16 lg:space-y-8">
                 <div className='flex flex-col space-y-4 lg:space-x-4 lg:space-y-0 lg:flex-row'>
                     <Input
                         ref={inputRef}
