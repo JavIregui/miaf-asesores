@@ -59,7 +59,7 @@ export const MiafNew = ({ newsItem }: NewProps) => {
                 </DialogHeader>
 
                 <div
-                    className="text-base font-sans px-8 py-8 lg:px-12"
+                    className="overflow-y-auto text-base font-sans px-8 py-8 lg:px-12"
                     dangerouslySetInnerHTML={{ __html: newsItem.content.replace(/<p>/g, '<p class="pb-2">'), }}
                 />
 
