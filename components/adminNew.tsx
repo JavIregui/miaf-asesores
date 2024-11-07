@@ -14,22 +14,37 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import {
+    EditDialog,
+    EditDialogAction,
+    EditDialogCancel,
+    EditDialogContent,
+    EditDialogDescription,
+    EditDialogFooter,
+    EditDialogHeader,
+    EditDialogTitle,
+    EditDialogTrigger,
+} from "@/components/ui/edit-dialog"
+
+import {
     Trash2,
     SquarePen
 } from 'lucide-react';
 
 import { useState } from 'react';
-import { client } from '@/lib/pocketbase';
 
 interface NewProps {
     newsItem: RecordModel;
     onDelete: (id: string) => Promise<void>;
+    onEdit: (/*aqui me falta el tipo de datos que recibe la función*/) => Promise<void>;
 }
 
-export const AdminNew = ({ newsItem, onDelete }: NewProps) => {
+export const AdminNew = ({ newsItem, onDelete, onEdit }: NewProps) => {
 
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
+
+    const [editOpen, setEditOpen] = useState(false);
+    const [updating, setUpdating] = useState(false);
 
     const handleDelete = async () => {
         setDeleting(true);
@@ -40,6 +55,18 @@ export const AdminNew = ({ newsItem, onDelete }: NewProps) => {
         } finally {
             setDeleteOpen(false);
             setDeleting(false);
+        }
+    };
+
+    const handleEdit = async () => {
+        setUpdating(true);
+        try {
+            //await onEdit(/*Tiene que recibir el objeto con los nuevos datos que hay en el form*/);
+        } catch (error) {
+            console.error('Error editing item:', error);
+        } finally {
+            setEditOpen(false);
+            setUpdating(false);
         }
     };
 
@@ -90,10 +117,44 @@ export const AdminNew = ({ newsItem, onDelete }: NewProps) => {
 
                         </AlertDialog>
 
-                        <Button variant="adminEdit" size="sm">
-                            <SquarePen className='h-4 w-4' />
-                            Editar
-                        </Button>
+                        <EditDialog open={editOpen} onOpenChange={setEditOpen}>
+
+                            <EditDialogTrigger asChild>
+
+                            <Button variant="adminEdit" size="sm">
+
+                                <SquarePen className='h-4 w-4' />
+                                Editar
+
+                            </Button>
+
+                            </EditDialogTrigger>
+
+                            <EditDialogContent>
+
+                                <EditDialogHeader>
+
+                                    <EditDialogTitle>Editar artículo</EditDialogTitle>
+
+                                    <EditDialogDescription>
+                                        Aquí se va a poder editar el  artículo
+                                    </EditDialogDescription>
+
+                                </EditDialogHeader>
+
+                                <EditDialogFooter>
+
+                                    <EditDialogCancel>Cancelar</EditDialogCancel>
+                                    
+                                    <EditDialogAction onClick={handleEdit} disabled={updating}>
+                                        {updating ? 'Guardando...' : 'Guardar'}
+                                    </EditDialogAction>
+
+                                </EditDialogFooter>
+
+                            </EditDialogContent>
+
+                        </EditDialog>
                     </div>
                     <div className='flex flex-col space-y-4'>
                         <div>

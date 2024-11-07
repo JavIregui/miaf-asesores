@@ -54,7 +54,7 @@ export default function Dashboard() {
     const fetchNews = debounce(async () => {
         setLoading(true);
     
-        let categoryFilters = [];
+        const categoryFilters = [];
         if (empresas) categoryFilters.push("empresas = true");
         if (personas) categoryFilters.push("personasFisicas = true");
         if (internacional) categoryFilters.push("internacional = true");

@@ -1,22 +1,22 @@
 "use client"
 
 import * as React from "react"
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
+import * as EditDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-const AlertDialog = AlertDialogPrimitive.Root
+const EditDialog = EditDialogPrimitive.Root
 
-const AlertDialogTrigger = AlertDialogPrimitive.Trigger
+const EditDialogTrigger = EditDialogPrimitive.Trigger
 
-const AlertDialogPortal = AlertDialogPrimitive.Portal
+const EditDialogPortal = EditDialogPrimitive.Portal
 
-const AlertDialogOverlay = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+const EditDialogOverlay = React.forwardRef<
+  React.ElementRef<typeof EditDialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof EditDialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Overlay
+  <EditDialogPrimitive.Overlay
     className={cn(
       "fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
@@ -25,15 +25,15 @@ const AlertDialogOverlay = React.forwardRef<
     ref={ref}
   />
 ))
-AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
+EditDialogOverlay.displayName = EditDialogPrimitive.Overlay.displayName
 
-const AlertDialogContent = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
+const EditDialogContent = React.forwardRef<
+  React.ElementRef<typeof EditDialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof EditDialogPrimitive.Content>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPortal>
-    <AlertDialogOverlay />
-    <AlertDialogPrimitive.Content
+  <EditDialogPortal>
+    <EditDialogOverlay />
+    <EditDialogPrimitive.Content
       ref={ref}
       className={cn(
         "fixed left-[50%] top-[50%] z-50 grid min-w-[calc(100dvw-64px)] sm:min-w-fit max-w-[512px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background px-8 py-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg",
@@ -41,11 +41,11 @@ const AlertDialogContent = React.forwardRef<
       )}
       {...props}
     />
-  </AlertDialogPortal>
+  </EditDialogPortal>
 ))
-AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
+EditDialogContent.displayName = EditDialogPrimitive.Content.displayName
 
-const AlertDialogHeader = ({
+const EditDialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -57,9 +57,9 @@ const AlertDialogHeader = ({
     {...props}
   />
 )
-AlertDialogHeader.displayName = "AlertDialogHeader"
+EditDialogHeader.displayName = "EditDialogHeader"
 
-const AlertDialogFooter = ({
+const EditDialogFooter = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -71,56 +71,56 @@ const AlertDialogFooter = ({
     {...props}
   />
 )
-AlertDialogFooter.displayName = "AlertDialogFooter"
+EditDialogFooter.displayName = "EditDialogFooter"
 
-const AlertDialogTitle = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
+const EditDialogTitle = React.forwardRef<
+  React.ElementRef<typeof EditDialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof EditDialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Title
+  <EditDialogPrimitive.Title
     ref={ref}
     className={cn("text-lg font-semibold", className)}
     {...props}
   />
 ))
-AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName
+EditDialogTitle.displayName = EditDialogPrimitive.Title.displayName
 
-const AlertDialogDescription = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
+const EditDialogDescription = React.forwardRef<
+  React.ElementRef<typeof EditDialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof EditDialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Description
+  <EditDialogPrimitive.Description
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
-AlertDialogDescription.displayName =
-  AlertDialogPrimitive.Description.displayName
+EditDialogDescription.displayName =
+  EditDialogPrimitive.Description.displayName
 
-const AlertDialogAction = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Action>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
+const EditDialogAction = React.forwardRef<
+  React.ElementRef<typeof EditDialogPrimitive.Action>,
+  React.ComponentPropsWithoutRef<typeof EditDialogPrimitive.Action> & {
     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
     size?: "default" | "sm" | "lg";
   }
 >(({ className, variant = "destructive", size = "lg", ...props }, ref) => (
-  <AlertDialogPrimitive.Action
+  <EditDialogPrimitive.Action
     ref={ref}
     className={cn(buttonVariants({ variant, size }), className)}
     {...props}
   />
 ))
-AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName
+EditDialogAction.displayName = EditDialogPrimitive.Action.displayName
 
-const AlertDialogCancel = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & {
+const EditDialogCancel = React.forwardRef<
+  React.ElementRef<typeof EditDialogPrimitive.Cancel>,
+  React.ComponentPropsWithoutRef<typeof EditDialogPrimitive.Cancel> & {
     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
     size?: "default" | "sm" | "lg";
   }
 >(({ className, variant = "outline", size = "lg",  ...props }, ref) => (
-  <AlertDialogPrimitive.Cancel
+  <EditDialogPrimitive.Cancel
     ref={ref}
     className={cn(buttonVariants({ variant, size}),
       className
@@ -128,18 +128,18 @@ const AlertDialogCancel = React.forwardRef<
     {...props}
   />
 ))
-AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
+EditDialogCancel.displayName = EditDialogPrimitive.Cancel.displayName
 
 export {
-  AlertDialog,
-  AlertDialogPortal,
-  AlertDialogOverlay,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
+  EditDialog,
+  EditDialogPortal,
+  EditDialogOverlay,
+  EditDialogTrigger,
+  EditDialogContent,
+  EditDialogHeader,
+  EditDialogFooter,
+  EditDialogTitle,
+  EditDialogDescription,
+  EditDialogAction,
+  EditDialogCancel,
 }
