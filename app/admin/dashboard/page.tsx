@@ -254,7 +254,7 @@ export default function Dashboard() {
                         />
                     </Link>
                     <h1 className='invisible sm:visible font-roboto font-normal text-miaf-gray-300 text-xl'>
-                        Bienvenido <span className='font-bold'>{userName}</span>
+                        Bienvenido/a <span className='font-bold'>{userName}</span>
                     </h1>
                 </div>
 
