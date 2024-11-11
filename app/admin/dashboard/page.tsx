@@ -172,10 +172,6 @@ export default function Dashboard() {
         }
     }, [loading, wasFocused]);
 
-    useEffect(() => {
-        console.log(formData.content)
-    }, [formData.content])
-
     const handleLogout = () => {
         Cookies.remove('pb_auth');
         client.authStore.clear();

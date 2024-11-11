@@ -67,7 +67,7 @@ export default function Home() {
     return (
         <>
             <Head>
-                <link rel="preload" href="/index.webp" as="image" />
+                <link rel="preload" href="/indexBg.webp" as="image" />
             </Head>
 
             <div>
